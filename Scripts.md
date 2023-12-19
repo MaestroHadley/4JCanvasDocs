@@ -6,5 +6,6 @@ The following scripts and processes are utilized to maintain the Eugene 4J Canva
 
 ## Contents ##
 > - [Archive Process](archive.md)
+> - [Synergy Grade Passback](synergy_passback.md)
 
 
