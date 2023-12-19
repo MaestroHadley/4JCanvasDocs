@@ -2,12 +2,18 @@ from canvasapi import Canvas
 import pandas as pd
 from datetime import date
 today = date.today()
+import os
+
+
+API_KEYBeta = os.getenv('API_KEYBeta')
+API_KEYLive = os.getenv('API_KEYLive')
+
 API_URLBeta = 'https://4j.beta.instructure.com'
-API_KEYBeta = '8347~FVYqDHPcXjypSt63jMsQrjCDqiwu5wrsRbu1oekNJWjuVHrUUPsXB3PflPT41wPZ'
-
-
-API_KEYLive = '8347~szZ5Wh35rdfhBuwtgHLfmeCyzZkh8crUPHT3hNB0mG3FjjNAM6YBzFM6X8wy31dq'
 API_URLLive = 'https://4j.instructure.com'
+
+
+
+
 
 #Change FILENAME HERE TO MATCHeta CURRENT PROJECT
 source_file = '/Users/4JStaff/Documents/Canvas Documentation/4JCanvasDocs/CanvasScripts/Source_Files/suspend_users_source.csv'

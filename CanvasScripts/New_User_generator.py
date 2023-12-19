@@ -11,11 +11,13 @@ from canvasapi.exceptions import CanvasException
 from canvasapi import Canvas
 import pandas as pd
 import csv
+import os
+
+
+API_KEYBeta = os.getenv('API_KEYBeta')
+API_KEYLive = os.getenv('API_KEYLive')
+
 API_URLBeta = 'https://4j.beta.instructure.com'
-API_KEYBeta = '8347~FVYqDHPcXjypSt63jMsQrjCDqiwu5wrsRbu1oekNJWjuVHrUUPsXB3PflPT41wPZ'
-
-
-API_KEYLive = '8347~szZ5Wh35rdfhBuwtgHLfmeCyzZkh8crUPHT3hNB0mG3FjjNAM6YBzFM6X8wy31dq'
 API_URLLive = 'https://4j.instructure.com'
 
 #Change FILENAME HERE TO MATCH CURRENT PROJECT
