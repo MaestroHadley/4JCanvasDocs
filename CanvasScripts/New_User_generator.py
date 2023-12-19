@@ -24,7 +24,7 @@ API_URLLive = 'https://4j.instructure.com'
 report_file = '/Users/4JStaff/Documents/Canvas Documentation/4JCanvasDocs/CanvasScripts/Report_Files/new_users_report.csv'
 source_df=pd.read_csv('/Users/4JStaff/Documents/Canvas Documentation/4JCanvasDocs/CanvasScripts/Source_Files/new_users_source.csv')
 
-canvas = Canvas(API_URLLive, API_KEYLive)#DOUBLE CHECK YOUR KEYS TO BETA OR LIVE FOR USE-CASE
+canvas = Canvas(API_URLBeta, API_KEYBeta)#DOUBLE CHECK YOUR KEYS TO BETA OR LIVE FOR USE-CASE
 
 account = canvas.get_account(1)
 
