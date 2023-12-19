@@ -4,3 +4,4 @@ new_users_source.csv
 suspend_users_source.csv
 Source_files/
 *.csv
+CanvasScripts/Source_Files/new_users_source.csv
