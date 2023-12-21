@@ -8,4 +8,5 @@ The following scripts and processes are utilized to maintain the Eugene 4J Canva
 > - [Archive Process](archive.md)
 > - [Synergy Grade Passback](synergy_passback.md)
 > - [Start of Semester](Start_of_Sem.md)
+> - [Canvas Data 2](canvas_data_2.md)
 
