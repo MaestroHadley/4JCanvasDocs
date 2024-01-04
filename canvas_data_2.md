@@ -27,7 +27,7 @@ Lastly, we wanted to establish the CLI (Command Line Interface), probably the mo
                    {snapshot,incremental,list,schema,initdb,syncdb,dropdb} ...
 7. To test if you are connected with your keys pull the list of tables with `dap list --namespace canvas` and you should get a list of tables available to you from within CD2. 
 
-Your machine is now successfully connected to CD2! You can now modify dap commands to download as specific files if you need, for ease of use you can use `dap snapshot --namespace canvas --tables users --format csv` and that will pull to your downloads folder as a CSV, but likely, zipped CSV file(s). Just swap `users` for any of the table names you need. 
+Your machine is now successfully connected to CD2! You can now modify dap commands to download as specific files if you need, for ease of use you can use `dap snapshot --namespace canvas --tables users --format csv --output-director PATH` and that will pull to your folder indicated in PATH folder as a CSV, but likely, zipped CSV file(s). Just swap `users` for any of the table names you need. 
 
 To feed into a database (again, I know nothing so I'm sure there's a better way) see the following. 
 ## Database Setup ##
