@@ -1,6 +1,6 @@
 # Canvas Data 2: Setup and Implementation #
 ## Summary ##
-Canvas Data 2 (CD2) frankly has been a beast to try and implement and understand. I am not a database admin nor data analyst or architect, regardless, with some GPT assistance and a **lot** of patience, I have established a secure connection and have detailed how I have accomplished that for thoe wanting to establish their own connection. 
+Canvas Data 2 (CD2) frankly has been a beast to try and implement and understand. I am not a database admin nor data analyst or architect, regardless, with some GPT assistance and a **lot** of patience, I have established a secure connection and have detailed how I have accomplished that for those wanting to establish their own connection. 
 
 CD2 is a new data portal for Canvas LMS by Instructure, you will first need to contact your CSM to ensure that your instance has an active portal/connection to CD2, it took us 2-3 weeks to hear back from CD2 with our connection, then we could navigate to [identity.instructure.com](https://identity.instructure.com), select your institution, and generate your own keys. You must record these in a secure location, and preferrably in multiple formats, ie. a secure file and on paper in the physical world. 
 
