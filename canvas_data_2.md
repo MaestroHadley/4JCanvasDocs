@@ -13,7 +13,7 @@ Lastly, we wanted to establish the CLI (Command Line Interface), probably the mo
 
 ---
 ## Setup Process ##
-1. Install Python3 on your machine. 
+1. Install Python3 V.10 on your machine. 
 2. Install Pip3 on your machine. 
 3. Install the CLI tool `pip3 install instructure-dap-client --upgrade --upgrade-strategy=eager`
 4. Set the environmental variables on your windows device: `DAP_API_URL`, `DAP_CLIENT_ID` and `DAP_CLIENT_SECRET` with your values, the URL is `https://api-gateway.instructure.com`. 
