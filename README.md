@@ -40,7 +40,7 @@ Once your access has been verified, you will need to generate an [API Token](htt
 
 Your API Keys will be hidden from view when sharing code and stored locally on your machine. 
 
-You will see in the [Scripts](Scripts.md) that there is a variable for the APILive and APIBeta, this follows this method so that we don't accidentally make changes to our life instance. You will simply verify the Key prior to running the script. 
+You will see in the [Scripts](Scripts.md) that there is a variable for the APILive and APIBeta, this follows this method so that we don't accidentally make changes to our live instance. You will simply verify the Key prior to running the script. 
 
 
 ## Contents ##
