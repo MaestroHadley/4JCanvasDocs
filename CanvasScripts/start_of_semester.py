@@ -12,6 +12,7 @@ import os
 API_KEYBeta = os.getenv('API_KEYBeta')
 API_KEYLive = os.getenv('API_KEYLive')
 
+#Be sure to change to your actual instance. 
 API_URLBeta = 'https://4j.beta.instructure.com'
 API_URLLive = 'https://4j.instructure.com'
 
