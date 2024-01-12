@@ -11,6 +11,8 @@ I then attempted to use Postman, which frankly was successful, but this is not f
 
 Lastly, we wanted to establish the CLI (Command Line Interface), probably the most difficult, again, for me at least. The mac device I was using was owned by my district and due to our cybersecurity insurance would not allow me *root access*. Of course, not until I had attempted my connection 3-5 times did I realize that the SSL error I was receiving from the terminal was related to lack of access. (Shoutout to our NS team for pointing that out to me). Finally, I turned to my windows development device. There, I was able to find success, and after months of tinkering with this in my spare time, the week before Christmas, where I had lots of time, I made the connection. 
 
+For more information on setting up this system in a **Linux** environment, [click here](canvas_data_2_linux.md).
+
 ---
 ## Setup Process ##
 1. Install Python3 V.10 on your machine. 
@@ -42,8 +44,11 @@ To feed into a database (again, I know nothing so I'm sure there's a better way)
 8. Log in to your server in pgAdmin4, you should see Schema, and Tables under that, that is where you'll find tables as you populate them. 
 9. Now, when you make DAP calls you can send them directly to the database with your new environmental variable! 
 10. Make a call, `dap initdb --namespace canvas --table #tablename --connection-string %DAP_CONNECTION_STRING%` Once the table has been initialized in your database, `initdb` you can proceed moving forward with the same command but with `syncdb` instead of the `initdb`. That makes downloading faster and easier on your network. Note that initializing the databases can be time consuming depending on which tables you choose. 
+11. Note that if you are wanting to automate any portion of your `dap` commands, you will need to create an environmental variable with your PostgreSQL password. It must be called `PGPASSWORD` and exported to your environment. Then when you run your automations, the call is thus `dap initdb --namespace canvas --table #tablename --connection-string %DAP_CONNECTION_STRING%` in a Windows environment. 
 
 You're all set! 
 I have written a rudimentary batch file that I have set in Windows Task Scheduler. The `initdb` portion has been commented out with `REM`, you'll want to remove those if you want to use this to populate your initial tables. 
 
 [File is located here.](CanvasScripts/CD2_scheduler.bat)
+
+For more information on setting up this system in a **Linux** environment, [click here](canvas_data_2_linux.md).
