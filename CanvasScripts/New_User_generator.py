@@ -35,7 +35,7 @@ schools= {
     "sheldon" : 140,
     "north" : 160,
     "south" : 157,
-    "ecco" : 162,
+    "ecco" : 178,
     "churchill" : 143,
     "calyoung" : 133,
     "ata" : 163,
@@ -99,6 +99,7 @@ def new_user(lastname,name,username,jobrole):
     if jobrole =="office": office_enroll(site,user)
     if jobrole =="district": account_admin(site,user)
     if jobrole =="principal": principal(site,user)
+    if jobrole =="interpreter": ea_enroll(site,user)
 
     
     record = [{
@@ -174,6 +175,7 @@ def sandbox_enroll(newCourse,user):
 def user_found(user,jobrole,site):
     if jobrole == 'interpreter':
         response = 'n'
+        ea_enroll(site,user)
     else:
         response = input("User found, proceed with Job Role Assignation?")
     if response == 'n' :
@@ -193,6 +195,8 @@ def user_found(user,jobrole,site):
         if jobrole =="office": office_enroll(site,user)
         if jobrole =="district": account_admin(site,user)
         if jobrole =="principal": principal(site,user)
+        if jobrole =="interpreter": ea_enroll(site,user)
+        
     
 
     

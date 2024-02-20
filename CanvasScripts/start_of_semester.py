@@ -34,8 +34,8 @@ def create_section(courseID):
     incompletes = course.create_course_section(
         course_section = {
             'name':'Incompletes',
-            'start_at': '2024-01-31T00:00:00Z', #you must have the correct time/date per ZULU time. 
-            'end_at': '2024-04-13T00:00:00Z',
+            'start_at': '2024-06-15T00:00:00Z', #you must have the correct time/date per ZULU time. 
+            'end_at': '2024-011-09T00:00:00Z',
             'restrict_enrollments_to_section_dates': True
             }
         )
