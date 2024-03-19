@@ -96,6 +96,7 @@ def new_user(lastname,name,username,jobrole):
     resource_enroll(user)
 
     if jobrole == "EA": ea_enroll(site,user)
+    if jobrole == "ea": ea_enroll(site,user)
     if jobrole =="office": office_enroll(site,user)
     if jobrole =="district": account_admin(site,user)
     if jobrole =="principal": principal(site,user)
@@ -192,6 +193,7 @@ def user_found(user,jobrole,site):
     else:
         resource_enroll(user)
         if jobrole == "EA": ea_enroll(site,user)
+        if jobrole == "ea": ea_enroll(site,user)
         if jobrole =="office": office_enroll(site,user)
         if jobrole =="district": account_admin(site,user)
         if jobrole =="principal": principal(site,user)
