@@ -1,14 +1,12 @@
 # Archival Process
 ## Eugene SD 4J Canvas Archival Process and Scripts ##
 
+Canvas LMS provides instructions on how to archive courses based on Term ID from an SIS Export Report. These instructions can be found [here.](CanvasScripts/Supporting_Files/move_courses.pdf) In essence, you will need to first generate the SIS Export for all terms, the Terms report, as well as a Provisioning report with SIS Created active as a backup. 
 
-While Canvas does provide instructions on how to do this via an SIS Import, often times that SIS import may miss courses, for whatever reason. 
+Open the SIS Export report, filter to the courses you need. For us this is done by setting the Term to 'begin with' the current term year. I then copy all fields to a new sheet. Insert three columns after the *long-name* column. In the first of the new columns put _AcademicYear ie '_21/22'. Fill down by clicking the small square at the bottom right of the cell. In the next column concatenate the two rows, fill down. Copy those values and paste-Values in the third column. Now you can delete long-name and the first two columns and rename the third as long_name. Finally, fill down the SIS_ID for the archive term you have created. Save as CSV and upload into your BETA instance for testing as an SIS Import with "Override UI changes" and "Process as UI Changes" active. 
 
-Therefore, a script has been developed to scrape through Canvas and correct based off current terms. 
-First you need to run the Admin>Terms report so you can identify the correct Term codes you want to utilize for the Archive as well as which Term Codes to cmd+f Replace with the Archive Term Code. 
-
-Hone the CSV down to a singular column by course_ids, this is done by filtering a provisioning report by `Created by SIS=True` and the current `term_id`.   
-
+On your Terms.CSV change the inactive terms now to Deleted as a status and upload in the same method as above. 
+You may get an error report stating a term cannot be deleted due to a course belonging to it. This is where a provisioning report can be leveraged to look for those courses. If there are many, you can use the script below to move them via the API. 
 
 ### Code Snip ##
 **Be sure to include imports and canvas tokens**
@@ -37,7 +35,7 @@ Hone the CSV down to a singular column by course_ids, this is done by filtering 
                         course.update(
                             course={
                                 'name': course.name + '_' + term_splice,
-                                'term_id': 406  # Make sure you have the right ID from prov. report, this is archive term.
+                                'term_id': 406  # Make sure you have the right ID from Terms report, this is archive term.
                             }
                         )
                         count += 1
@@ -51,6 +49,4 @@ Hone the CSV down to a singular column by course_ids, this is done by filtering 
     updater = CanvasCourseUpdater(API_URLLive, API_KEYLive, '/Users/4JStaff/Documents/CanvasAPIScripts/archive/to_archive.csv')
     updater.update_courses()
 
-This script will rename the course as well by appending the correct current Term to the end. This was used in our mass archival process so we could archive 3 years at one time. I had decided to do this rather than using the SIS Import option to move over the courses because we needed to append the year from the *various* terms. Now that courses belong to a singular term, I may move to utilizing the SIS Import option. 
-
-[More info can be found here](CanvasScripts/Supporting_Files/move_courses.pdf)
+This script will rename the course as well by appending the correct current Term to the end. 

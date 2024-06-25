@@ -4,6 +4,7 @@ This release (5/10/23) includes updates to the search function to determine if a
 Utilizing the method from Shane it will now search by email and username and then cross-reference those IDs. 
 This allows for a much more accurate return on which accounts need to be created. This also includes updates to 
 allow for SSD to be enrolled into its own sub account as well for admins etc. -NSH
+Update 4/1/24- Included helper function: PD_Consult to allow for easier upload of custom users to specific courses/sections as needed. 
 '''
 import random
 from canvasapi.exceptions import CanvasException
@@ -36,6 +37,7 @@ schools= {
     "north" : 160,
     "south" : 157,
     "ecco" : 178,
+    "eoa" : 284,
     "churchill" : 143,
     "calyoung" : 133,
     "ata" : 163,
@@ -51,13 +53,19 @@ schools= {
 
 
 
-def new_user(lastname,name,username,jobrole):
+def new_user(lastname,name,username,jobrole,pd_course_id,pd_section_id):
     global user
-    if jobrole == 'interpreter':
-        email = username+"@lesd.k12.or.us"
-    else: 
-        email = username+'@4j.lane.edu'
-    print(email)
+    username = str(username)
+    email_domain = {
+        'interpreter': 'lesd.k12.or.us',
+        'pd': None,  # Set to None for username only emails
+        'default': '4j.lane.edu'
+    }
+
+    if jobrole == 'pd':
+        email = username
+    else:
+        email = username + "@" + email_domain.get(jobrole, email_domain['default'])
                  
     account = canvas.get_account(1)
 
@@ -101,6 +109,7 @@ def new_user(lastname,name,username,jobrole):
     if jobrole =="district": account_admin(site,user)
     if jobrole =="principal": principal(site,user)
     if jobrole =="interpreter": ea_enroll(site,user)
+    if jobrole =="pd": pd_consult(user,pd_course_id,pd_section_id)
 
     
     record = [{
@@ -173,7 +182,7 @@ def sandbox_enroll(newCourse,user):
     print("Completed Sandbox Enrollment")
 
 
-def user_found(user,jobrole,site):
+def user_found(user,jobrole,site,pd_course_id,pd_section_id):
     if jobrole == 'interpreter':
         response = 'n'
         ea_enroll(site,user)
@@ -198,10 +207,21 @@ def user_found(user,jobrole,site):
         if jobrole =="district": account_admin(site,user)
         if jobrole =="principal": principal(site,user)
         if jobrole =="interpreter": ea_enroll(site,user)
+        if jobrole =="pd": pd_consult(user,pd_course_id,pd_section_id)
         
     
 
     
+#helper function to enroll specialty users.
+def pd_consult(user,pd_course_id,pd_section_id):
+    #print('Course', pd_course_id, 'Section', pd_section_id)
+    course = canvas.get_course(pd_course_id)
+    course.enroll_user(user, enrollment_type = "TeacherEnrollment", enrollment={'enrollment_state': 'active'})
+    print('PD User enrolled at Teacher', course)
+
+
+
+
 
 
 def ea_enroll(site,user):
@@ -248,16 +268,26 @@ for row in source_df.itertuples():
     username = row[3]
     jobrole = row[4]
     site = row[5]
-    if jobrole == 'interpreter':
-        email = username+"@lesd.k12.or.us"
-    else: 
-        email = username+'@4j.lane.edu'
-    name = firstname+' '+lastname
-    print(firstname, lastname, username)
     username = str(username)
+    email_domain = {
+        'interpreter': 'lesd.k12.or.us',
+        'pd': None,  # Set to None for username only emails
+        'default': '4j.lane.edu'
+    }
+
+    if jobrole == 'pd':
+        email = username
+    else:
+        email = username + "@" + email_domain.get(jobrole, email_domain['default'])
+
+    name = firstname+' '+lastname
+    print(firstname, lastname, username, 'email',email)
+
     search_results_empty = False
     search_results = account.get_users(search_term=email)
-
+#PD Tools, enter appropriate sections for PD Consultants or special users. 
+    pd_course_id = 45550
+    pd_section_id = None
     try:
         search_results[0]
     except IndexError:
@@ -273,12 +303,12 @@ for row in source_df.itertuples():
             if(email == this_user.email):
                 matching_user_id = this_user.id
                 user = this_user
-                user_found(user,jobrole,site) 
+                user_found(user,jobrole,site,pd_course_id,pd_section_id) 
                 break
         
     if ((matching_user_id == -1 ) or (search_results_empty)):
 
         print("Creating account for "+firstname,lastname,username)
-        new_user(lastname,name,username,jobrole)
+        new_user(lastname,name,username,jobrole,pd_course_id,pd_section_id)
         
 print("Finished")
