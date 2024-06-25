@@ -50,3 +50,96 @@ You may get an error report stating a term cannot be deleted due to a course bel
     updater.update_courses()
 
 This script will rename the course as well by appending the correct current Term to the end. 
+
+## Teacher Enrollment Archive ##
+
+After more than 4 years of Canvas usage in our district, it's apparent we needed a way to offload teacher course enrollments from previous years. Teachers were experiencing large and confusing lists of past courses when attempting to import content year to year. Leveraging Canvas Data 2, I was able to create an SIS Import to *inactivate* those enrollments for teachers. 
+
+By inactivating the enrollment, the course stays in the teacher's account but is hidden from their view and can be restored at any time by an account admin. 
+
+For information on setting up Canvas Data 2 see [here.](canvas_data_2.md)
+
+Create a new View in your CD2 Database with the following: 
+
+    SELECT courses.sis_source_id  AS course_id,
+        pseudonyms.sis_user_id AS user_id,
+        enrollments.role_id,
+        sections.sis_source_id AS section_id
+    FROM canvas.pseudonyms pseudonyms
+            JOIN canvas.enrollments enrollments ON pseudonyms.user_id = enrollments.user_id
+            JOIN canvas.courses courses ON enrollments.course_id = courses.id
+            JOIN canvas.course_sections sections ON enrollments.course_section_id = sections.id
+    WHERE pseudonyms.sis_user_id::text ~~ 'staff_%'::text
+    AND (pseudonyms.user_id IN (SELECT pseudonyms_1.user_id
+                                FROM canvas.pseudonyms pseudonyms_1
+                                WHERE pseudonyms_1.sis_user_id::text ~~ 'staff_%'::text))
+    AND (enrollments.workflow_state::text ~~ 'active'::text OR enrollments.workflow_state::text ~~ 'completed'::text)
+    AND courses.sis_source_id IS NOT NULL
+    AND enrollments.role_id::text ~~ '4'::text
+    AND (courses.sis_source_id::text ~~ '2020_%'::text OR courses.sis_source_id::text ~~ '2021_%'::text OR
+        courses.sis_source_id::text ~~ '2022_%'::text)
+    ORDER BY pseudonyms.user_id, courses.sis_source_id, sections.sis_source_id
+
+**Note** that our identifier for all staff in Canvas is in their SIS_ID which begins with "Staff_". You may need to use a different identifier. Additionally, our courses are transported from Synergy SIS with the current year's academic ending year appended to the front, ie 2021 is the 2020/2021 academic year. 
+
+## Reactivate Courses ## 
+
+In the event that a teacher would like to have their courses restored to them, the easiest way to do so is by using the function below which will pull all inactive courses for a teacher, we can then funnel down based on sis_id or other factor, and re-import it to Canvas via SIS Import. 
+
+    CREATE OR REPLACE FUNCTION get_inactives(input_user_id TEXT)
+    RETURNS TABLE(
+        course_id TEXT,
+        user_id TEXT,
+        role_id TEXT,
+        section_id TEXT,
+        status TEXT
+    ) AS $$
+    BEGIN
+        RETURN QUERY
+        SELECT courses.sis_source_id::text AS course_id,
+            pseudonyms.sis_user_id::text AS user_id,
+            enrollments.role_id::text,
+            sections.sis_source_id::text AS section_id,
+            enrollments.workflow_state::text AS status
+        FROM canvas.pseudonyms pseudonyms
+        JOIN canvas.enrollments enrollments ON pseudonyms.user_id = enrollments.user_id
+        JOIN canvas.courses courses ON enrollments.course_id = courses.id
+        JOIN canvas.course_sections sections ON enrollments.course_section_id = sections.id
+        WHERE pseudonyms.user_id::text = input_user_id
+        AND (pseudonyms.user_id IN (SELECT pseudonyms_1.user_id
+                                    FROM canvas.pseudonyms pseudonyms_1
+                                    WHERE pseudonyms_1.sis_user_id::text LIKE 'staff_%'))
+        AND (enrollments.workflow_state::text LIKE 'inactive'
+            OR enrollments.workflow_state::text LIKE 'completed')
+        AND courses.sis_source_id IS NOT NULL
+        AND pseudonyms.sis_user_id IS NOT NULL
+        AND enrollments.role_id::text LIKE '4'
+        ORDER BY pseudonyms.user_id, courses.sis_source_id, sections.sis_source_id;
+    END $$ LANGUAGE plpgsql;
+
+## Call as ##
+    -- Replace '2228' with the actual user_id you want to filter by
+    SELECT * FROM get_inactives('2228');
+
+
+You can also use the function below to get a more wholistic list based of Canvas User ID. 
+
+    SELECT courses.sis_source_id  AS course_id,
+        pseudonyms.sis_user_id AS user_id,
+        enrollments.role_id,
+        sections.sis_source_id AS section_id,
+        enrollments.workflow_state AS status
+    FROM canvas.pseudonyms pseudonyms
+            JOIN canvas.enrollments enrollments ON pseudonyms.user_id = enrollments.user_id
+            JOIN canvas.courses courses ON enrollments.course_id = courses.id
+            JOIN canvas.course_sections sections ON enrollments.course_section_id = sections.id
+    WHERE pseudonyms.user_id::text ~~ '#CANVASUSERID'::text
+    AND (pseudonyms.user_id IN (SELECT pseudonyms_1.user_id
+                                FROM canvas.pseudonyms pseudonyms_1
+                                WHERE pseudonyms_1.sis_user_id::text ~~ 'staff_%'::text))
+    AND (enrollments.workflow_state::text ~~ 'inactive'::text OR enrollments.workflow_state::text ~~ 'completed'::text)
+    AND courses.sis_source_id IS NOT NULL
+    AND pseudonyms.sis_user_id IS NOT NULL
+    AND enrollments.role_id::text ~~ '4'::text
+
+    ORDER BY pseudonyms.user_id, courses.sis_source_id, sections.sis_source_id
