@@ -46,6 +46,8 @@ You will see in the [Scripts](Scripts.md) that there is a variable for the APILi
 ## Contents ##
 >
 > - [Definitions ](Definitions.md)
-> - [Scripts and Processes](Scripts.md)
-> - 
+> - [Archive Process](archive.md)
+> - [Synergy Grade Passback](synergy_passback.md)
+> - [Start of Semester](Start_of_Sem.md)
+> - [Canvas Data 2](canvas_data_2.md)
 
