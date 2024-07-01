@@ -1,17 +1,14 @@
 // ==UserScript==
-// @name         4J Instructor Canvas Tools
-// @namespace    https://github.com/sukotsuchido/CanvasUserScripts
-// @version      1.8
-// @description  A Canvas UserScript to facilitate crosslisting of courses.
-// @author       Chad Scott (ChadScott@katyisd.org)
-// @author       Other Mods by Nicholas Hadley (hadley_n@4j.lane.edu)
-// @match     https://4j.test.instructure.com/courses
-// @match     https://4j.test.instructure.com/courses/*/assignments
-// @updateURL https://raw.githubusercontent.com/MaestroHadley/4JCanvasDocs/main/CanvasScripts/4J_Tamper_Tools.js
-//@downloadURL https://raw.githubusercontent.com/MaestroHadley/4JCanvasDocs/main/CanvasScripts/4J_Tamper_Tools.js
-
-
+// @name         4J Tamper Tools
+// @namespace    https://github.com/MaestroHadley/4JCanvasDocs
+// @version      1.0
+// @description  A Canvas UserScript for 4J specific tools.
+// @author       Nicholas
+// @match        https://4j.test.instructure.com/courses
+// @match        https://4j.test.instructure.com/courses/*/assignments
 // @grant        none
+// @updateURL    https://raw.githubusercontent.com/MaestroHadley/4JCanvasDocs/main/CanvasScripts/4J_Tamper_Tools.js
+// @downloadURL  https://raw.githubusercontent.com/MaestroHadley/4JCanvasDocs/main/CanvasScripts/4J_Tamper_Tools.js
 // ==/UserScript==
 (function() {
     'use strict';
