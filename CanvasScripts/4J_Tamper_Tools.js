@@ -19,6 +19,11 @@
     if (/^\/\??[^\/]*\/?$/.test(window.location.pathname)) {
         waitForElement("#dashboard_header_container div.ic-Dashboard-header__actions", addDashboardAllCoursesButton);
     }
+    // Check if the current page is the modules page and add the "Jump to Module" functionality
+    if (/^\/courses\/[0-9]+\/modules\??[^\/]*\/?$/.test(window.location.pathname) ||
+        /^\/courses\/[0-9]+\??[^\/]*\/?$/.test(window.location.pathname)) {
+        waitForElement("#context_modules", addJumpToModuleSelection);
+    }
 
     // Check if the current page is the /courses page and add filters, search, and sorting
     if (/^\/courses\??[^\/]*\/?$/.test(window.location.pathname)) {
@@ -46,6 +51,95 @@
         } else {
             setTimeout(() => waitForElement(selector, callback), 100);
         }
+    }
+
+ // Function to add the "Jump to Module" functionality
+    function addJumpToModuleSelection(contextModulesDiv) {
+        if (contextModulesDiv) {
+            createJumpToModuleMenu(contextModulesDiv);
+
+            const moduleDivs = [
+                ...document.querySelectorAll("#context_modules div.context_module"),
+            ];
+            addModuleLinksToMenu(moduleDivs);
+        }
+    }
+
+    function addBackToTopButton(moduleDiv) {
+        const containerDiv = document.createElement("div");
+        containerDiv.classList.add("ski-container-back-top-button");
+        containerDiv.style.textAlign = "right";
+        containerDiv.style.padding = "9px";
+        containerDiv.style.marginTop = "-0.5rem";
+        containerDiv.style.marginBottom = "-0.5rem";
+        containerDiv.dataset.associatedModuleId = `${moduleDiv?.dataset?.moduleId}`;
+        containerDiv.innerHTML = `<a class="Button" href="#"><i class="icon-line icon-arrow-up"></i> Back to Top</a>`;
+
+        moduleDiv.insertAdjacentElement("beforeEnd", containerDiv);
+    }
+
+    function createJumpToModuleMenu(contextModulesDiv) {
+        const jumpToModuleSelectionHTML = `
+        <details id='ski-jump-to-module-menu' class='ski-ui' style="margin: 9px;">
+            <summary>Jump to Module</summary>
+            <ul></ul>
+        </details>`;
+
+        contextModulesDiv.insertAdjacentHTML(
+            "beforebegin",
+            jumpToModuleSelectionHTML
+        );
+    }
+
+    function addModuleLinksToMenu(moduleDivs) {
+        for (const moduleDiv of moduleDivs) {
+            addModuleLinkToMenu(moduleDiv);
+        }
+    }
+
+    function addModuleLinkToMenu(moduleDiv) {
+        const jumpToModuleMenu = document.getElementById("ski-jump-to-module-menu");
+        if (!jumpToModuleMenu) {
+            return;
+        }
+
+        const menuList = jumpToModuleMenu.querySelector("ul");
+        const moduleId = moduleDiv.id.split("_").pop();
+        if (menuList && moduleId) {
+            const moduleHeader = document.getElementById(`${moduleId}`);
+            if (moduleHeader) {
+                const moduleNameSpan = document.querySelector(
+                    `#context_module_${moduleId} div.header span.name`
+                );
+                if (moduleNameSpan) {
+                    const moduleName = moduleNameSpan.innerText;
+                    if (moduleName) {
+                        addBackToTopButton(moduleDiv);
+
+                        const menuLinkItem = document.createElement("li");
+                        menuLinkItem.innerHTML = `<a href='#context_module_${moduleId}'>${moduleName}</a>`;
+                        menuList.insertAdjacentElement("beforeEnd", menuLinkItem);
+                    }
+                }
+            }
+        }
+
+        jumpToModuleMenu.style.display = "";
+    }
+
+    function removeBackToTopContainer(moduleId) {
+        const backToTopContainer = document.querySelector(
+            `#context_modules div[data-associated-module-id='${moduleId}']`
+        );
+        backToTopContainer?.parentElement?.removeChild(backToTopContainer);
+    }
+
+    function removeLinkItem(moduleId) {
+        const link = document.querySelector(
+            `#ski-jump-to-module-menu li > a[href='#context_module_${moduleId}']`
+        );
+        const linkItem = link?.parentElement;
+        linkItem?.parentElement?.removeChild(linkItem);
     }
     // Function to add column sorting to the /courses page tables
     function addColumnSortsToAllCoursesTables() {
