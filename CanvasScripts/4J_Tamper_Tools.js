@@ -6,6 +6,7 @@
 // @author       Chad Scott (ChadScott@katyisd.org)
 // @author       Other Mods by Nicholas Hadley (hadley_n@4j.lane.edu)
 // @match        https://*.instructure.com/courses
+// @match        https://*.instructure.com/*
 // @match        https://*.instructure.com/courses/*/assignments
 // @grant        none
 // @updateURL    https://raw.githubusercontent.com/MaestroHadley/4JCanvasDocs/main/CanvasScripts/4J_Tamper_Tools.js
@@ -14,9 +15,243 @@
 (function() {
     'use strict';
 
-    // Check if the current page is the assignments page and add the sync button
-    if (/\/courses\/\d+\/assignments/.test(window.location.pathname)) {
-        addSyncButton();
+    // Check if the current page is the dashboard and add the "See all courses" button
+    if (/^\/\??[^\/]*\/?$/.test(window.location.pathname)) {
+        waitForElement("#dashboard_header_container div.ic-Dashboard-header__actions", addDashboardAllCoursesButton);
+    }
+
+    // Check if the current page is the /courses page and add filters, search, and sorting
+    if (/^\/courses\??[^\/]*\/?$/.test(window.location.pathname)) {
+        waitForElement("#content", () => {
+            addColumnSortsToAllCoursesTables();
+            addSearchFiltersToAllCoursesTables(true, true); // Enable both search fields and filters
+        });
+    }
+
+    // Function to add the "See all courses" button on the dashboard
+    function addDashboardAllCoursesButton(headerActionsDiv) {
+        var allCoursesLink = document.createElement("a");
+        allCoursesLink.href = "/courses";
+        allCoursesLink.classList.add("Button");
+        allCoursesLink.innerText = "See all courses";
+        allCoursesLink.style.marginRight = "1.5rem";
+
+        headerActionsDiv.insertAdjacentElement("afterbegin", allCoursesLink);
+    }
+    // Utility function to wait for an element to be available in the DOM
+    function waitForElement(selector, callback) {
+        const element = document.querySelector(selector);
+        if (element) {
+            callback(element);
+        } else {
+            setTimeout(() => waitForElement(selector, callback), 100);
+        }
+    }
+    // Function to add column sorting to the /courses page tables
+    function addColumnSortsToAllCoursesTables() {
+        const courseTableIds = ["my_courses_table", "past_enrollments_table", "future_enrollments_table"];
+        courseTableIds.forEach(courseTableId => {
+            const table = document.getElementById(courseTableId);
+            if (table) {
+                const tableHeaders = table.querySelectorAll("thead tr th[scope='col']");
+                tableHeaders.forEach(columnHeader => {
+                    const columnNameClass = Array.from(columnHeader.classList).find(className =>
+                        className.startsWith("course-list-") && className.endsWith("-column")
+                    );
+                    if (columnNameClass && !columnNameClass.includes("-star")) {
+                        const columnCells = Array.from(table.querySelectorAll(`tbody tr td.${columnNameClass}`));
+                        if (columnCells.length > 1) {
+                            const headingName = columnHeader.innerText.trim();
+                            columnHeader.innerHTML = `<button class="ski-ui-column-sort-btn" data-ski-sort-dir="none">${headingName}</button>`;
+                            const columnSortButton = columnHeader.querySelector("button");
+                            columnSortButton.addEventListener("click", () => {
+                                const sortDirection = columnSortButton.dataset.skiSortDir;
+                                columnSortButton.dataset.skiSortDir = sortDirection === "asc" ? "desc" : "asc";
+                                Array.from(table.querySelectorAll("thead th button.ski-ui-column-sort-btn"))
+                                    .filter(btn => btn !== columnSortButton)
+                                    .forEach(btn => btn.dataset.skiSortDir = "none");
+                                updateTableSortDisplay(courseTableId, columnNameClass, columnSortButton.dataset.skiSortDir === "asc");
+                            });
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    // Function to update table sorting display
+    function updateTableSortDisplay(tableId, sortColumn, isOrderAscending) {
+        const table = document.getElementById(tableId);
+        if (table) {
+            const tableBody = table.querySelector("tbody");
+            const tableRows = Array.from(tableBody.querySelectorAll("tr.course-list-table-row"));
+            if (tableRows.length > 1) {
+                tableRows.sort((aRow, bRow) => {
+                    const aCell = aRow.querySelector(`td.${sortColumn}`);
+                    const bCell = bRow.querySelector(`td.${sortColumn}`);
+                    return isOrderAscending
+                        ? aCell.innerText.toUpperCase().localeCompare(bCell.innerText.toUpperCase())
+                        : bCell.innerText.toUpperCase().localeCompare(aCell.innerText.toUpperCase());
+                });
+                tableRows.forEach(row => tableBody.appendChild(row));
+            }
+        }
+    }
+
+    // Function to add search filters to the /courses page tables
+    function addSearchFiltersToAllCoursesTables(areSearchFieldsEnabled, areFiltersEnabled) {
+        if (areSearchFieldsEnabled || areFiltersEnabled) {
+            addSearchFiltersRowToAllCoursesTables();
+            if (areSearchFieldsEnabled) addSearchFieldsToAllCoursesTables();
+            if (areFiltersEnabled) addFiltersToAllCoursesTables();
+        }
+    }
+
+    // Function to add the search filters row
+    function addSearchFiltersRowToAllCoursesTables() {
+        const courseTableIds = ["my_courses_table", "past_enrollments_table", "future_enrollments_table"];
+        courseTableIds.forEach(courseTableId => {
+            const coursesTable = document.getElementById(courseTableId);
+            if (coursesTable) {
+                const coursesTableHead = coursesTable.querySelector("thead");
+                if (coursesTableHead) {
+                    if (!coursesTableHead.querySelector("tr.ski-search-filters-row")) {
+                        coursesTableHead.insertAdjacentHTML("beforeend", `
+                            <tr class="ski-search-filters-row">
+                                <td class="course-list-star-column"></td>
+                                <td class="ski-column-search-field course-list-course-title-column course-list-no-left-border"></td>
+                                <td class="ski-column-search-field course-list-nickname-column course-list-no-left-border"></td>
+                                <td class="ski-column-filter-field course-list-term-column course-list-no-left-border"></td>
+                                <td class="ski-column-filter-field course-list-enrolled-as-column course-list-no-left-border"></td>
+                                <td class="ski-column-filter-field course-list-published-column course-list-no-left-border"></td>
+                            </tr>
+                        `);
+                    }
+                }
+            }
+        });
+    }
+
+    // Function to add search fields to the tables
+    function addSearchFieldsToAllCoursesTables() {
+        const courseTableIds = ["my_courses_table", "past_enrollments_table", "future_enrollments_table"];
+        courseTableIds.forEach(courseTableId => {
+            const coursesSearchAndFiltersRow = document.querySelector(`#${courseTableId} thead tr.ski-search-filters-row`);
+            if (coursesSearchAndFiltersRow) {
+                addSearchField(coursesSearchAndFiltersRow, "course-list-course-title-column", "ski-course-title-search", "Search course title");
+                addSearchField(coursesSearchAndFiltersRow, "course-list-nickname-column", "ski-course-nickname-search", "Search nickname");
+            }
+        });
+    }
+
+    // Function to add individual search field
+    function addSearchField(coursesSearchAndFiltersRow, columnClass, inputClass, placeholder) {
+        const searchCell = coursesSearchAndFiltersRow.querySelector(`.ski-column-search-field.${columnClass}`);
+        if (searchCell && !searchCell.querySelector(`.${inputClass}`)) {
+            searchCell.insertAdjacentHTML("afterbegin", `<input type="text" class="${inputClass}" placeholder="${placeholder}" style="margin-bottom: 0;">`);
+            const searchInput = searchCell.querySelector(`.${inputClass}`);
+            if (searchInput) {
+                searchInput.addEventListener("keyup", () => updateTableFilteredDisplay(searchCell.closest("table").id));
+                searchInput.addEventListener("blur", () => updateTableFilteredDisplay(searchCell.closest("table").id));
+            }
+        }
+    }
+
+    // Function to add filters to the tables
+    function addFiltersToAllCoursesTables() {
+        const courseTableIds = ["my_courses_table", "past_enrollments_table", "future_enrollments_table"];
+        courseTableIds.forEach(courseTableId => {
+            const coursesSearchAndFiltersRow = document.querySelector(`#${courseTableId} thead tr.ski-search-filters-row`);
+            if (coursesSearchAndFiltersRow) {
+                addFilter(coursesSearchAndFiltersRow, "course-list-term-column", "ski-course-term-filter");
+                addFilter(coursesSearchAndFiltersRow, "course-list-enrolled-as-column", "ski-course-role-filter");
+                addFilter(coursesSearchAndFiltersRow, "course-list-published-column", "ski-course-published-filter");
+            }
+        });
+    }
+
+    // Function to add individual filter
+    function addFilter(coursesSearchAndFiltersRow, columnClass, selectClass) {
+        const filterCell = coursesSearchAndFiltersRow.querySelector(`.ski-column-filter-field.${columnClass}`);
+        if (filterCell && !filterCell.querySelector(`.${selectClass}`)) {
+            filterCell.insertAdjacentHTML("afterbegin", `<select class="${selectClass}"><option value="">All</option></select>`);
+            const filterSelect = filterCell.querySelector(`.${selectClass}`);
+            if (filterSelect) {
+                const options = Array.from(new Set(Array.from(document.querySelectorAll(`#${filterCell.closest("table").id} tbody tr td.${columnClass}`)).map(cell => cell.innerText))).sort();
+                options.forEach(option => filterSelect.insertAdjacentHTML("beforeend", `<option value="${option}">${option}</option>`));
+                filterSelect.addEventListener("change", () => updateTableFilteredDisplay(filterCell.closest("table").id));
+            }
+        }
+    }
+
+    // Function to update table filtered display
+    function updateTableFilteredDisplay(tableId) {
+        const table = document.getElementById(tableId);
+        if (table) {
+            const searchAndFiltersRow = table.querySelector("thead tr.ski-search-filters-row");
+            const filters = gatherFilters(searchAndFiltersRow);
+            const tableRows = Array.from(table.querySelectorAll("tbody tr.course-list-table-row"));
+            tableRows.forEach(row => {
+                row.style.display = filters.every(filter => {
+                    const cell = row.querySelector(`.${filter.column}`);
+                    return filter.type === "search"
+                        ? cell.innerText.toUpperCase().includes(filter.value.toUpperCase())
+                        : cell.innerText === filter.value;
+                }) ? "table-row" : "none";
+            });
+        }
+    }
+
+    // Function to gather filters
+    function gatherFilters(searchAndFiltersRow) {
+        const filters = [];
+        searchAndFiltersRow.querySelectorAll("td.ski-column-search-field").forEach(searchCell => {
+            const searchInput = searchCell.querySelector("input");
+            if (searchInput && !searchInput.disabled) {
+                filters.push({
+                    type: "search",
+                    value: new DOMParser().parseFromString(searchInput.value, "text/html").body.innerText.trim(),
+                    column: Array.from(searchCell.classList).find(className => className.startsWith("course-list-") && className.endsWith("-column"))
+                });
+            }
+        });
+        searchAndFiltersRow.querySelectorAll("td.ski-column-filter-field").forEach(filterCell => {
+            const selectInput = filterCell.querySelector("select");
+            if (selectInput && !selectInput.disabled) {
+                filters.push({
+                    type: "filter",
+                    value: new DOMParser().parseFromString(selectInput.value, "text/html").body.innerText.trim(),
+                    column: Array.from(filterCell.classList).find(className => className.startsWith("course-list-") && className.endsWith("-column"))
+                });
+            }
+        });
+        return filters;
+    }
+    // Function to watch for the element by query
+    function watchForElementByQuery(query, callback) {
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.addedNodes.length) {
+                    const element = document.querySelector(query);
+                    if (element) {
+                        observer.disconnect();
+                        callback(element);
+                    }
+                }
+            });
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+        });
+
+        // Fallback if the element is already on the page
+        const element = document.querySelector(query);
+        if (element) {
+            observer.disconnect();
+            callback(element);
+        }
     }
     var assocRegex = new RegExp('^/courses$');
     var assocRegex2 = new RegExp('^/accounts/([0-9]+)$');
