@@ -4,8 +4,8 @@
 // @version      1.0
 // @description  A Canvas UserScript for 4J specific tools.
 // @author       Nicholas
-// @match        https://4j.*.instructure.com/courses
-// @match        https://4j.*.instructure.com/courses/*/assignments
+// @match        https://*.instructure.com/courses
+// @match        https://*.instructure.com/courses/*/assignments
 // @grant        none
 // @updateURL    https://raw.githubusercontent.com/MaestroHadley/4JCanvasDocs/main/CanvasScripts/4J_Tamper_Tools.js
 // @downloadURL  https://raw.githubusercontent.com/MaestroHadley/4JCanvasDocs/main/CanvasScripts/4J_Tamper_Tools.js
