@@ -3,7 +3,8 @@
 // @namespace    https://github.com/MaestroHadley/4JCanvasDocs
 // @version      1.0
 // @description  A Canvas UserScript for 4J specific tools.
-// @author       Nicholas
+// @author       Chad Scott (ChadScott@katyisd.org)
+// @author       Other Mods by Nicholas Hadley (hadley_n@4j.lane.edu)
 // @match        https://*.instructure.com/courses
 // @match        https://*.instructure.com/courses/*/assignments
 // @grant        none
