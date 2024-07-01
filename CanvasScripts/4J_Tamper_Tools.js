@@ -4,10 +4,8 @@
 // @version      1.0
 // @description  A Canvas UserScript for 4J specific tools.
 // @author       Chad Scott (ChadScott@katyisd.org)
-// @author       Other Mods by Nicholas Hadley (hadley_n@4j.lane.edu)
-// @match        https://*.instructure.com/courses
+// @author       Nicholas Hadley (hadley_n@4j.lane.edu)
 // @match        https://*.instructure.com/*
-// @match        https://*.instructure.com/courses/*/assignments
 // @grant        none
 // @updateURL    https://raw.githubusercontent.com/MaestroHadley/4JCanvasDocs/main/CanvasScripts/4J_Tamper_Tools.js
 // @downloadURL  https://raw.githubusercontent.com/MaestroHadley/4JCanvasDocs/main/CanvasScripts/4J_Tamper_Tools.js
