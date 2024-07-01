@@ -7,6 +7,9 @@
 // @author       Other Mods by Nicholas Hadley (hadley_n@4j.lane.edu)
 // @match     https://4j.test.instructure.com/courses
 // @match     https://4j.test.instructure.com/courses/*/assignments
+// @updateURL https://raw.githubusercontent.com/MaestroHadley/4JCanvasDocs/main/CanvasScripts/4J_Tamper_Tools.js
+//@downloadURL https://raw.githubusercontent.com/MaestroHadley/4JCanvasDocs/main/CanvasScripts/4J_Tamper_Tools.js
+
 
 // @grant        none
 // ==/UserScript==
