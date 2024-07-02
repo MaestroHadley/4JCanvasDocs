@@ -26,7 +26,7 @@
     // Check if the current page is the /courses page and add filters, search, and sorting
     if (/^\/courses\??[^\/]*\/?$/.test(window.location.pathname)) {
         waitForElement("#content", () => {
-            addColumnSortsToAllCoursesTables();
+            //addColumnSortsToAllCoursesTables();
             addSearchFiltersToAllCoursesTables(true, true); // Enable both search fields and filters
         });
     }
@@ -275,58 +275,159 @@
             }
         }
     }
-
-    // Function to update table filtered display
     function updateTableFilteredDisplay(tableId) {
         const table = document.getElementById(tableId);
         if (table) {
             const searchAndFiltersRow = table.querySelector("thead tr.ski-search-filters-row");
-            const filters = gatherFilters(searchAndFiltersRow);
-            const tableRows = Array.from(table.querySelectorAll("tbody tr.course-list-table-row"));
-            tableRows.forEach(row => {
-                row.style.display = filters.every(filter => {
-                    const cell = row.querySelector(`.${filter.column}`);
-                    return filter.type === "search"
-                        ? cell.innerText.toUpperCase().includes(filter.value.toUpperCase())
-                        : cell.innerText === filter.value;
-                }) ? "table-row" : "none";
-            });
+            const filters = [];
+
+            const searchCells = [
+                ...searchAndFiltersRow.querySelectorAll("td.ski-column-search-field"),
+            ];
+            for (let searchCell of searchCells) {
+                const searchInput = searchCell.querySelector("input");
+                if (searchInput && !searchInput.disabled) {
+                    const searchInputValue = new DOMParser().parseFromString(
+                        searchInput.value,
+                        "text/html"
+                    ).body.innerText;
+                    const columnNameClass = [...searchCell.classList].reduce(
+                        (previousValue, currentValue) => {
+                            if (
+                                currentValue.startsWith("course-list-") &&
+                                currentValue.endsWith("-column")
+                            ) {
+                                previousValue = currentValue;
+                            }
+                            return previousValue;
+                        }
+                    );
+
+                    filters.push({
+                        type: "search",
+                        value: searchInputValue.trim(),
+                        column: columnNameClass,
+                    });
+                }
+            }
+
+            const filterCells = [
+                ...searchAndFiltersRow.querySelectorAll("td.ski-column-filter-field"),
+            ];
+            for (let filterCell of filterCells) {
+                const selectInput = filterCell.querySelector("select");
+                if (selectInput && !selectInput.disabled) {
+                    const selectInputValue = new DOMParser().parseFromString(
+                        selectInput.value,
+                        "text/html"
+                    ).body.innerText;
+                    const columnNameClass = [...filterCell.classList].reduce(
+                        (previousValue, currentValue) => {
+                            if (
+                                currentValue.startsWith("course-list-") &&
+                                currentValue.endsWith("-column")
+                            ) {
+                                previousValue = currentValue;
+                            }
+                            return previousValue;
+                        },
+                        ""
+                    );
+
+                    filters.push({
+                        type: "filter",
+                        value: selectInputValue.trim(),
+                        column: columnNameClass,
+                    });
+                }
+            }
+
+            if (searchAndFiltersRow) {
+                const tableRows = [
+                    ...table.querySelectorAll("tbody tr.course-list-table-row"),
+                ];
+                if (tableRows) {
+                    for (let row of tableRows) {
+                        let displayValue = "table-row";
+                        for (let filter of filters) {
+                            if (filter.value) {
+                                const cellToCheck = row.querySelector(`.${filter.column}`);
+                                if (cellToCheck) {
+                                    if (filter.type == "search") {
+                                        if (
+                                            !cellToCheck.innerText
+                                            .toUpperCase()
+                                            .includes(filter.value.toUpperCase())
+                                        ) {
+                                            displayValue = "none";
+                                            break;
+                                        }
+                                    } else if (filter.type == "filter") {
+                                        if (filter.column.includes("-published-")) {
+                                            if (
+                                                cellToCheck.querySelector("span").innerText.trim() !=
+                                                filter.value
+                                            ) {
+                                                displayValue = "none";
+                                                break;
+                                            }
+                                        } else {
+                                            if (cellToCheck.innerText.trim() != filter.value) {
+                                                displayValue = "none";
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        row.style.display = displayValue;
+                    }
+                }
+            }
         }
     }
 
-    // Function to gather filters
-    function gatherFilters(searchAndFiltersRow) {
-        const filters = [];
-        searchAndFiltersRow.querySelectorAll("td.ski-column-search-field").forEach(searchCell => {
-            const searchInput = searchCell.querySelector("input");
-            if (searchInput && !searchInput.disabled) {
-                filters.push({
-                    type: "search",
-                    value: new DOMParser().parseFromString(searchInput.value, "text/html").body.innerText.trim(),
-                    column: Array.from(searchCell.classList).find(className => className.startsWith("course-list-") && className.endsWith("-column"))
-                });
-            }
-        });
-        searchAndFiltersRow.querySelectorAll("td.ski-column-filter-field").forEach(filterCell => {
-            const selectInput = filterCell.querySelector("select");
-            if (selectInput && !selectInput.disabled) {
-                filters.push({
-                    type: "filter",
-                    value: new DOMParser().parseFromString(selectInput.value, "text/html").body.innerText.trim(),
-                    column: Array.from(filterCell.classList).find(className => className.startsWith("course-list-") && className.endsWith("-column"))
-                });
-            }
-        });
-        return filters;
-    }
+
+function gatherFilters(searchAndFiltersRow) {
+    const filters = [];
+    searchAndFiltersRow.querySelectorAll("td.ski-column-search-field").forEach(searchCell => {
+        const searchInput = searchCell.querySelector("input");
+        if (searchInput && !searchInput.disabled) {
+            filters.push({
+                type: "search",
+                value: searchInput.value.trim(),
+                column: Array.from(searchCell.classList).find(className => className.startsWith("course-list-") && className.endsWith("-column"))
+            });
+        }
+    });
+    searchAndFiltersRow.querySelectorAll("td.ski-column-filter-field").forEach(filterCell => {
+        const selectInput = filterCell.querySelector("select");
+        if (selectInput && !selectInput.disabled) {
+            filters.push({
+                type: "filter",
+                value: selectInput.value.trim(),
+                column: Array.from(filterCell.classList).find(className => className.startsWith("course-list-") && className.endsWith("-column"))
+            });
+        }
+    });
+    console.log("Filters gathered:", filters);
+    return filters;
+}
+
+
+
     // Function to watch for the element by query
     function watchForElementByQuery(query, callback) {
+        console.log("Watching for element:", query);
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.addedNodes.length) {
                     const element = document.querySelector(query);
                     if (element) {
                         observer.disconnect();
+                        console.log("Element found:", element);
                         callback(element);
                     }
                 }
@@ -342,9 +443,11 @@
         const element = document.querySelector(query);
         if (element) {
             observer.disconnect();
+            console.log("Element already present:", element);
             callback(element);
         }
     }
+
     var assocRegex = new RegExp('^/courses$');
     var assocRegex2 = new RegExp('^/accounts/([0-9]+)$');
     var acc = window.location.pathname;
