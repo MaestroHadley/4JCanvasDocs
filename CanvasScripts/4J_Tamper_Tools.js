@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         4J Tamper Tools
 // @namespace    https://github.com/MaestroHadley/4JCanvasDocs
-// @version      1.5
+// @version      1.7
 // @description  A Canvas UserScript for 4J specific tools.
 // @author       Chad Scott (ChadScott@katyisd.org)
 // @author       Nicholas Hadley (hadley_n@4j.lane.edu)
