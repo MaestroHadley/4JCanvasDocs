@@ -55,6 +55,7 @@ schools= {
 
 def new_user(lastname,name,username,jobrole,pd_course_id,pd_section_id):
     global user
+    sis_id = 'staff_'+lastname
     username = str(username)
     email_domain = {
         'interpreter': 'lesd.k12.or.us',
@@ -77,7 +78,7 @@ def new_user(lastname,name,username,jobrole,pd_course_id,pd_section_id):
             'force_validations' : True,
             'enable_sis_reactivation' : True,
             'skip_registration': True,
-            'sis_id' : 'staff_'+lastname 
+            'sis_id' : sis_id 
         
             
         },
@@ -90,7 +91,7 @@ def new_user(lastname,name,username,jobrole,pd_course_id,pd_section_id):
         },
         pseudonym={
             
-            'sis_user_id': username,
+            'sis_user_id': sis_id,
             'send_confirmation': True,
             'unique_id': username
             
