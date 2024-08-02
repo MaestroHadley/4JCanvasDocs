@@ -50,4 +50,5 @@ You will see in the [Scripts](Scripts.md) that there is a variable for the APILi
 > - [Synergy Grade Passback](synergy_passback.md)
 > - [Start of Semester](Start_of_Sem.md)
 > - [Canvas Data 2](canvas_data_2.md)
+> - [Updating Admins](sub_acct_admins.md)
 

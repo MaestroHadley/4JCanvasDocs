@@ -169,8 +169,8 @@ def create_course_with_new_sis_id(lastname, user, sis_course_id):
 
 def resource_enroll(user):
     target_account = canvas.get_account(1)
-    course = canvas.get_course(34255)
-    sectionid = 35063
+    course = canvas.get_course(47001)
+    sectionid = 54893
     print("Enrolling in Resource Course")
     course.enroll_user(user, enrollment_type = "StudentEnrollment", enrollment={'enrollment_state': 'active', 'course_section_id' : sectionid})
     print("Completed Resource Enrollment")
