@@ -5,7 +5,8 @@
 // @description  A Canvas UserScript for 4J specific tools.
 // @author       Chad Scott (ChadScott@katyisd.org)
 // @author       Nicholas Hadley (hadley_n@4j.lane.edu)
-// @match        https://4j.*.instructure.com/*
+// @match        https://4j.instructure.com/*
+// @match        https://4j.test.instructure.com/*
 // @grant        none
 // @updateURL    https://github.com/MaestroHadley/4JCanvasDocs/raw/main/CanvasScripts/4J_Tamper_Tools.user.js
 // @downloadURL  https://github.com/MaestroHadley/4JCanvasDocs/raw/main/CanvasScripts/4J_Tamper_Tools.user.jsjs
