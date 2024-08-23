@@ -6,8 +6,8 @@
 // @author       Chad Scott (ChadScott@katyisd.org)
 // @author       Nicholas Hadley (hadley_n@4j.lane.edu)
 // @match        https://4j.instructure.com/*
-// @match        https://4j.beta.instructure.com/*
 // @match        https://4j.test.instructure.com/*
+// @match        https://4j.beta.instructure.com/*
 // @grant        none
 // @updateURL    https://github.com/MaestroHadley/4JCanvasDocs/raw/main/CanvasScripts/4J_Tamper_Tools.user.js
 // @downloadURL  https://github.com/MaestroHadley/4JCanvasDocs/raw/main/CanvasScripts/4J_Tamper_Tools.user.jsjs
@@ -73,7 +73,7 @@
         containerDiv.style.marginTop = "-0.5rem";
         containerDiv.style.marginBottom = "-0.5rem";
         containerDiv.dataset.associatedModuleId = `${moduleDiv?.dataset?.moduleId}`;
-        containerDiv.innerHTML = `<a class="Button" href="#"><i class="icon-line icon-arrow-up"></i> Back to Top</a>`;
+        containerDiv.innerHTML = `<a class="Button" href="modules"><i class="icon-line icon-arrow-up"></i> Back to Top</a>`;
 
         moduleDiv.insertAdjacentElement("beforeEnd", containerDiv);
     }
