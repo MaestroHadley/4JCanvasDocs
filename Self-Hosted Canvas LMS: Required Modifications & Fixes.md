@@ -1,6 +1,6 @@
 ## **Self-Hosted Canvas LMS: Required Modifications & Fixes**
 
-This document outlines all key changes and workarounds made to our Canvas LMS instance to ensure successful installation, functionality, and course export/import. Each section lists the change and relevant context.
+This document outlines all key changes and workarounds made to our Canvas LMS instance to ensure successful installation, functionality, and course export/import. Each section lists the change and relevant context. For initial install, the Instructure Production Guide was used- [Production](https://github.com/instructure/canvas-lms/wiki/Production-Start). After initial install it was noted that many elements were still not set, below were a few.
 
 ---
 
