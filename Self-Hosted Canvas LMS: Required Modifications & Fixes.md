@@ -18,14 +18,6 @@ This document outlines all key changes and workarounds made to our Canvas LMS in
 Environment=RAILS_ENV=production
 ```
 
-- - 
-  
-  - Also added to the ExecStart command as:
-
-```
-ExecStart=/bin/bash -lc 'RAILS_ENV=production bundle exec script/canvas_init run'
-```
-
 ---
 
 ### **2.**
