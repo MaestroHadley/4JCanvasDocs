@@ -5,6 +5,10 @@ Utilizing the method from Shane it will now search by email and username and the
 This allows for a much more accurate return on which accounts need to be created. This also includes updates to 
 allow for SSD to be enrolled into its own sub account as well for admins etc. -NSH
 Update 4/1/24- Included helper function: PD_Consult to allow for easier upload of custom users to specific courses/sections as needed. 
+
+This script creates new users based on roles, EA, Teacher, Office Staff etc. Be sure to go through and change what is needeed
+for your use-case. Check also "Supporting Files" for a CSV sample for the Source File. 
+
 '''
 import random
 from canvasapi.exceptions import CanvasException
@@ -18,8 +22,8 @@ import os
 API_KEYBeta = os.getenv('API_KEYBeta')
 API_KEYLive = os.getenv('API_KEYLive')
 
-API_URLBeta = 'https://4j.beta.instructure.com'
-API_URLLive = 'https://4j.instructure.com'
+API_URLBeta = 'https://YOURINSTANCE.beta.instructure.com'
+API_URLLive = 'https://YOURINSTANCE.instructure.com'
 
 #Change FILENAME HERE TO MATCH CURRENT PROJECT
 report_file = '/Users/4JStaff/Documents/Canvas Documentation/4JCanvasDocs/CanvasScripts/Report_Files/new_users_report.csv'
