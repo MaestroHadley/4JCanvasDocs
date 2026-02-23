@@ -7,7 +7,8 @@ allow for SSD to be enrolled into its own sub account as well for admins etc. -N
 Update 4/1/24- Included helper function: PD_Consult to allow for easier upload of custom users to specific courses/sections as needed. 
 
 This script creates new users based on roles, EA, Teacher, Office Staff etc. Be sure to go through and change what is needeed
-for your use-case. Check also "Supporting Files" for a CSV sample for the Source File. 
+for your use-case.  
+You will need a Source CSV file (line 30) with headers: [firstname	lastname	username	jobrole	    school]. 
 
 '''
 import random
