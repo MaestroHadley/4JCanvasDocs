@@ -1,0 +1,17 @@
+# OS/editor artifacts
+.DS_Store
+**/.DS_Store
+**/__pycache__/
+**/*.pyc
+
+# Generated logs/reports/exports
+CD2/logs/*.txt
+CD2/TSV_Output/*.tsv
+eoa_attendance/reports/*
+!eoa_attendance/reports/.gitkeep
+eoa_attendance/report_generation.log
+admin/grade_sync/grade_sync_report.txt
+admin/start_of_semester/semester_logs.txt
+archive/*.log
+admin/pd_enroll/Pd_enroll_records.txt
+admin/pd_enroll/jobs/jobs_report.txt
