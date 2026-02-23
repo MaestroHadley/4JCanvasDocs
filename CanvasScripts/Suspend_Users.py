@@ -1,3 +1,9 @@
+"""
+This script will search users from a CSV with header 'emails' in a list and suspend their Canvas Account,
+disabling inapporpriate logins and access to Canvas. Change source in line 25.
+
+"""
+
 from canvasapi import Canvas
 import pandas as pd
 from datetime import date
@@ -8,8 +14,8 @@ import os
 API_KEYBeta = os.getenv('API_KEYBeta')
 API_KEYLive = os.getenv('API_KEYLive')
 
-API_URLBeta = 'https://4j.beta.instructure.com'
-API_URLLive = 'https://4j.instructure.com'
+API_URLBeta = 'https://YOURINSTANCE.beta.instructure.com'
+API_URLLive = 'https://YOURINSTANCE.instructure.com'
 
 
 
