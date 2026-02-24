@@ -72,7 +72,7 @@ def download_sis_export():
     """Download SIS export report for course data."""
     request_report('sis_export_csv', {'courses': "1", 'locale': "en"}, '/home/scripts/archive/sis_export.csv')
 
-def process_sis_import(term_names):
+def process_sis_import(term_names): #Be sure to updated names and Term IDs.
     """Filter SIS export and create SIS import archive for automated upload."""
     df = pd.read_csv('/home/scripts/archive/sis_export.csv')
     filtered_courses = df[df['term_id'].isin(term_names)]
@@ -145,8 +145,8 @@ def cleanup(term_names):
     for _, row in filtered_courses.iterrows():
         try:
             course = canvas.get_course(row['canvas_course_id'])
-            course.update(course={'term_id': 406})
-            logging.info(f"Updated course {row['canvas_course_id']} to term 406")
+            course.update(course={'term_id': 406}) #Be sure to update Term IDs
+            logging.info(f"Updated course {row['canvas_course_id']} to term 406") #Be sure to updated Term IDs
         except Exception as e:
             logging.error(f"Failed to update course {row['canvas_course_id']}: {e}")
     
