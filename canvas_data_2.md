@@ -11,7 +11,7 @@ I then attempted to use Postman, which frankly was successful, but this is not f
 
 Lastly, we wanted to establish the CLI (Command Line Interface), probably the most difficult, again, for me at least. The mac device I was using was owned by my district and due to our cybersecurity insurance would not allow me *root access*. Of course, not until I had attempted my connection 3-5 times did I realize that the SSL error I was receiving from the terminal was related to lack of access. (Shoutout to our NS team for pointing that out to me). Finally, I turned to my windows development device. There, I was able to find success, and after months of tinkering with this in my spare time, the week before Christmas, where I had lots of time, I made the connection. 
 
-For more information on setting up this system in a **Linux** environment, [click here](canvas_data_2_linux.md).
+For more information on setting up this system in a **Linux/MAC** environment, [click here](canvas_data_2_linux.md).
 
 ---
 ## Setup Process ##
@@ -19,10 +19,11 @@ For more information on setting up this system in a **Linux** environment, [clic
 2. Install Pip3 on your machine. 
 3. Install the CLI tool `pip3 install instructure-dap-client --upgrade --upgrade-strategy=eager`
 4. Set the environmental variables on your windows device: `DAP_API_URL`, `DAP_CLIENT_ID` and `DAP_CLIENT_SECRET` with your values, the URL is `https://api-gateway.instructure.com`. 
-	>If you're unsure how to set an environmental variable [see here.](http://www.computerhope.com/issues/ch000549.htm)
+	>If you're unsure how to set an environmental variable on a PC- [see here.](http://www.computerhope.com/issues/ch000549.htm)
+ 	>On a MAC device or LINUX env [see here.](https://drive.google.com/file/d/13rWE5uFOAgTWMjbZGSwAhCI-DKhIcjvj/view)
 
-5. Save everything, and restart your machine. Yes, it's worth it. 
-6. Open your CMD, type `dap --help` if you have set it up correctly you should see something similar to:
+5. Save everything, and restart your machine. 
+6. Open your CMD/Terminal, type `dap --help` if you have set it up correctly you should see something similar to:
 
        usage: dap [--version] [--base-url URL] [--client-id ClientID] [--client-secret ClientSecret]
                    [--loglevel {debug,info,warning,error,critical}] [--logfile LogFile] [--help]
